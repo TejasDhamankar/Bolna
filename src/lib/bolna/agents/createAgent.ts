@@ -133,16 +133,24 @@ export async function createAgent(agentData: AnyObj) {
                 language: language,
             };
             break;
+        
+        // --- START OF FIX ---
         case 'sarvam':
+            // Sarvam (and others) need both the name and the ID,
+            // just like ElevenLabs.
             provider_config = {
-                voice: voice.voice_id, 
+                voice: voice.name,     // e.g., "Vidya"
+                voice_id: voice.voice_id, // e.g., "arya"
                 language: language,
                 model: voice.model,
             };
             break;
+        // --- END OF FIX ---
+            
         case 'deepgram':
         case 'azuretts':
         default:
+            // This is the default for 'cartesia' and 'inworld' as well
             provider_config = {
                 voice: voice.name,
                 model: voice.model,
@@ -215,12 +223,8 @@ export async function createAgent(agentData: AnyObj) {
               encoding: "linear16",
               endpointing: 100,
             },
-            
-            // --- START OF FIX ---
             input: { provider: "exotel", format: "wav" },
             output: { provider: "exotel", format: "wav" },
-            // --- END OF FIX ---
-            
             api_tools: null, // TODO: Map your tools
           },
           toolchain: {
